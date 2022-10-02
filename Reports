@@ -1,0 +1,34 @@
+
+---Doctor with Maximum Number of Visits---
+SELECT 'Dr.' || doctor.Doctor_First_Name || ' ' || doctor.Doctor_Last_Name as DOCTOR, number_of_appointments 
+    FROM (
+SELECT count(1) as number_of_appointments, appointment.Doctor_Id  as app_doc_id
+    FROM Patient_Visit  appointment
+    group by appointment.Doctor_id
+    order by 1 desc),  Doctor_Records  doctor
+WHERE app_doc_id = doctor.Doctor_id
+AND ROWNUM < 2;
+
+
+---No. of patients in a Treatment Category---
+SELECT Treatment.Treatment, COUNT(visit.patient_id) number_of_patients
+FROM Patient_Treatment Treatment, Patient_Visit Visit  
+WHERE Treatment.Visit_Id = Visit.Visit_Id
+group by Treatment.Treatment
+order by  2 desc;
+
+
+---No. of patients under Doctor---
+SELECT Doctor.Doctor_First_Name || ' ' || Doctor.Doctor_Last_Name as DOCTOR, COUNT(Treatment.patient_id) number_of_patients
+FROM Patient_Treatment Treatment, Doctor_Records Doctor  
+WHERE Treatment.Doctor_Id = Doctor.Doctor_Id
+group by Doctor.Doctor_First_Name || ' ' || Doctor.Doctor_Last_Name 
+order by  2 desc;
+
+
+---Number of doctors in a department based on availability---
+SELECT Doctor.Specialization, COUNT(DISTINCT (Doctor.doctor_id)) as number_of_doctors
+FROM Doctor_Records Doctor
+WHERE Doctor.doctor_status= 'Available'
+group by Doctor.Specialization
+order by 1 desc;
